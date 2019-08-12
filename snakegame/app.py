@@ -1,5 +1,5 @@
 from time import time
-from entities import Game, GameOver
+from snakegame.entities import Game, GameOver
 import pyxel as px
 
 
@@ -52,5 +52,3 @@ class App:
 
 
 
-app = App(width=20, height=20)
-app.run()

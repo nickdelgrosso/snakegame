@@ -99,5 +99,4 @@ class Game:
         opposite_direction = {UP: DOWN, DOWN: UP, LEFT: RIGHT, RIGHT: LEFT}
         new_direction = directions[direction.lower()]
         if new_direction != self.direction and new_direction != opposite_direction[self.direction]:
-            print(self.direction, new_direction)
             self.direction = new_direction
