@@ -82,7 +82,7 @@ class Game:
 
             food = tuple(randrange(c) for c in self.board)
             while touches_food(snake=self.snake, food=food):
-                food = tuple(randrange(c) for c in self.board)
+                food = tuple(randrange(1, c - 1) for c in self.board)
             self.food = food
 
     @property
