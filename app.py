@@ -1,5 +1,5 @@
 from time import time
-from entities import Game
+from entities import Game, GameOver
 import pyxel as px
 
 
@@ -7,16 +7,32 @@ class App:
 
     controls = {px.KEY_UP: 'up', px.KEY_DOWN: 'down', px.KEY_LEFT: 'left', px.KEY_RIGHT: 'right'}
 
-    def __init__(self, width = 10, height = 10, speed=0.4):
-        self.game = Game.create(width=width, height=height, speed=speed)
+    def __init__(self, width = 10, height = 10, speed=0.2):
+        self.width = width
+        self.height = height
+        self.speed = speed
+        self.game_over = False
+        self.new_game()
         px.init(width=width, height=height, caption="Snake")
 
-    def update(self):
-        for control, direction in self.controls.items():
-            if px.btn(control):
-                self.game.set_direction(direction=direction)
+    def new_game(self):
+        self.game = Game.create(width=self.width, height=self.height, speed=self.speed)
 
-        self.game.step(time=time())
+    def update(self):
+
+        if not self.game_over:
+            try:
+                for control, direction in self.controls.items():
+                    if px.btn(control):
+                        self.game.set_direction(direction=direction)
+
+                self.game.step(time=time())
+            except GameOver:
+                self.game_over = True
+        else:
+            if px.btn(px.KEY_SPACE):
+                self.new_game()
+                self.game_over = False
 
     def draw(self):
         px.cls(0)
@@ -24,6 +40,7 @@ class App:
             if pos:
                 x, y = pos
                 px.pix(x=x, y=self.game.height - y - 1, col=3)
+
 
         food = self.game.food
         if food:
@@ -35,5 +52,5 @@ class App:
 
 
 
-app = App()
+app = App(width=20, height=20)
 app.run()

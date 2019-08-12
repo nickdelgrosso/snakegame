@@ -1,6 +1,7 @@
 from typing import NewType, Sequence, Union, List, Tuple, NamedTuple
 from enum import Enum
 from dataclasses import dataclass
+from random import randrange
 
 XY = NewType('XY', Tuple[int, int])
 Board = NewType('Board', XY)
@@ -49,6 +50,7 @@ class Game:
     food: Union[Food, None]
     speed: Speed
     direction: Direction
+    speed_increase: float
 
     def __post_init__(self):
         self.last_step_time = 0.  # Time since last frame (for monitoring time)
@@ -59,7 +61,8 @@ class Game:
                    snake=((1, 1),),
                    food=Food(XY((3, 3))),
                    speed=Speed(speed),
-                   direction=UP)
+                   direction=UP,
+                   speed_increase=1.05)
 
     def step(self, time) -> None:
 
@@ -74,8 +77,13 @@ class Game:
             raise GameOver
 
         if touches_food(self.snake, self.food):
-            self.food = None
             self.snake = grow(self.snake)
+            self.speed = self.speed / self.speed_increase
+
+            food = tuple(randrange(c) for c in self.board)
+            while touches_food(snake=self.snake, food=food):
+                food = tuple(randrange(c) for c in self.board)
+            self.food = food
 
     @property
     def width(self):
@@ -88,4 +96,8 @@ class Game:
     def set_direction(self, direction: str):
         """Sets direction to "up", "left", "down", "right".  """
         directions = {'up': UP, 'left': LEFT, 'right': RIGHT, 'down': DOWN}
-        self.direction = directions[direction.lower()]
+        opposite_direction = {UP: DOWN, DOWN: UP, LEFT: RIGHT, RIGHT: LEFT}
+        new_direction = directions[direction.lower()]
+        if new_direction != self.direction and new_direction != opposite_direction[self.direction]:
+            print(self.direction, new_direction)
+            self.direction = new_direction
