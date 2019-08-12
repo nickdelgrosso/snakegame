@@ -1,2 +1,1 @@
 pyxel
-win32com
