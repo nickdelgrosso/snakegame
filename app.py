@@ -1,26 +1,33 @@
 from time import time
-from typing import List, Tuple
-from entities import Direction, Board, Snake, Food, Game, XY, Speed, move
+from entities import Game
 import pyxel as px
 
 
 class App:
 
+    controls = {px.KEY_UP: 'up', px.KEY_DOWN: 'down', px.KEY_LEFT: 'left', px.KEY_RIGHT: 'right'}
+
     def __init__(self, width = 10, height = 10, speed=0.4):
         self.game = Game.create(width=width, height=height, speed=speed)
         px.init(width=width, height=height, caption="Snake")
-        print(self.game.snake)
+
     def update(self):
+        for control, direction in self.controls.items():
+            if px.btn(control):
+                self.game.set_direction(direction=direction)
 
         self.game.step(time=time())
 
     def draw(self):
-        for x, y in self.game.snake:
-            px.pix(x=x, y=self.game.height - y, col=3)
+        px.cls(0)
+        for pos in self.game.snake:
+            if pos:
+                x, y = pos
+                px.pix(x=x, y=self.game.height - y - 1, col=3)
 
         food = self.game.food
         if food:
-            px.pix(x=food[0], y=food[1], col=4)
+            px.pix(x=food[0], y=self.game.height - food[1] - 1, col=4)
 
 
     def run(self):

@@ -84,3 +84,8 @@ class Game:
     @property
     def height(self):
         return self.board[1]
+
+    def set_direction(self, direction: str):
+        """Sets direction to "up", "left", "down", "right".  """
+        directions = {'up': UP, 'left': LEFT, 'right': RIGHT, 'down': DOWN}
+        self.direction = directions[direction.lower()]
